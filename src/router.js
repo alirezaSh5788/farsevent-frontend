@@ -25,7 +25,7 @@ const routes = [
         path: "/createEvent", component: createEventForm
     },
     {
-        path: "/allEvent", component: allEvent
+        path: "/allEvent/", component: allEvent
     },
     {
         path: "/buyTicket/:id", component: buyTicket

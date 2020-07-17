@@ -21,7 +21,16 @@ export default {
     appFacilities: Facilities,
     appFooter: Footer
   },
-  
+  beforeRouteEnter: function(to, from, next) {
+    next(vm => {
+      vm.send();
+    });
+  },
+  methods:{
+    send:function(){
+      this.$store.dispatch('loadDataOfHomePage')
+    }
+  }
 };
 </script>
 <style scoped>

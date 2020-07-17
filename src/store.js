@@ -11,7 +11,11 @@ export default new Vuex.Store({
         wrongInfoLogin: false,
         signUpError: false,
         registerTicketNumber: '',
-        checkHeader: false
+        checkHeader: false,
+        typeEvent: {},
+        event: [],
+        categoryEvent: {},
+        cityEvent:{}
     },
     mutations: {
         authUser(state, userData) {
@@ -36,6 +40,24 @@ export default new Vuex.Store({
         },
         setCheckHeader(state, checker) {
             state.checkHeader = checker.setCheckHeader
+        },
+        setEventData(state, dataLoad) {
+            for (let key in dataLoad) { 
+                state.event.push(dataLoad[key])
+            }
+            console.log("stateEvent",state.event)
+        },
+        setTypeData(state, dataLoad) {
+            state.typeEvent = dataLoad
+            console.log("stateType",state.typeEvent)
+        },
+        setCityData(state, dataLoad) {
+            state.cityEvent = dataLoad
+            console.log("stateCity",state.cityEvent)
+        },
+        setCategoryData(state, dataLoad) {
+            state.categoryEvent = dataLoad
+            console.log("stateCategory",state.categoryEvent)
         }
     },
     actions: {
@@ -101,6 +123,64 @@ export default new Vuex.Store({
                 .catch(
                     error => console.log("buyTicketError", error.response)
                 )
+        },
+        loadDataOfHomePage({commit}) {
+            let eventData=[]
+            var categoryData = {}
+            var cityData = {}
+            var typeData = {}
+            axios.get("http://localhost:8000/event/event-list/?limit=5&offset=0").then(
+                res => {
+                    for (let key in res.data.results) {
+                        eventData.push(res.data.results[key])
+                    }
+                    console.log("eventData", eventData)
+                    commit('setEventData',eventData)
+                }
+            ).catch(
+                error => {
+                    console.log("errorEventData",error.response)
+                }
+            )
+            axios.get("http://localhost:8000/event/all-categories/").then(
+                res => {
+                    for (let key in res.data) {
+                        categoryData[res.data[key].name]=res.data[key].id
+                    }
+                    console.log("categoryData", categoryData)
+                    commit('setCategoryData', categoryData)
+                }
+            ).catch(
+                error => {
+                    console.log("errorCategoryData", error)
+                }
+            )
+            axios.get("http://localhost:8000/auth/all-cities").then(
+                res => {
+                    for (let key in res.data) {
+                        cityData[res.data[key].name]=res.data[key].id;
+                    }
+                    console.log("cityData", cityData)
+                    commit('setCityData', cityData)
+                }
+            ).catch(
+                error => {
+                    console.log("errorCityData", error.response)
+                }
+            )
+            axios.get("http://localhost:8000/event/all-types/").then(
+                res => { 
+                    for (let key in res.data) {
+                        typeData[res.data[key].name]=res.data[key].id;
+                    }
+                    console.log("typeData", typeData)
+                    commit('setTypeData', typeData)
+                }
+            ).catch(
+                error => {
+                    console.log("errorTypeData", error.response)
+                }
+            )
         }
     },
     getters: {
@@ -117,5 +197,17 @@ export default new Vuex.Store({
         getRegisterNumber: state => {
             return state.registerTicketNumber
         },
+        getTypeEvent: state => {
+            return state.typeEvent
+        },
+        getEvent: state => {
+            return state.event
+        },
+        getCategoryEvent: state => {
+            return state.categoryEvent
+        },
+        getCityEvent: state => {
+            return state.cityEvent
+        }
     }
 });

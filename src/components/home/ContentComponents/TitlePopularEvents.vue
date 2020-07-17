@@ -1,6 +1,6 @@
 <template>
   <div class="trendin-week d-flex">
-    <h3 class="ml-3">محبوب ترین های این هفته</h3>
+    <h3 class="ml-3">رویدادهای ثبت شده</h3>
     <a href="#" class="mt-2">مشاهده ی همه</a>
   </div>
 </template>
