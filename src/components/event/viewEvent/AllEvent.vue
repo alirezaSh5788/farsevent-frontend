@@ -12,25 +12,28 @@
           <h3>جست وجوی رویداد</h3>
           <div class="form-group mb-4">
             <label for="EName">نام رویداد</label>
-            <input type="text" class="form-control" id="EName" name="EName" 
-            v-model="infoSearch.nameOfEvent" />
+            <input
+              type="text"
+              class="form-control"
+              id="EName"
+              name="EName"
+              v-model="infoSearch.nameOfEvent"
+            />
           </div>
           <div class="row">
             <div class="col mb-4">
               <div class="form-group">
                 <label for="sel1">نوع رویداد</label>
-                <select class="form-control" id="sel1"
-                v-model="infoSearch.typeOfEvent">
-                  <option v-for="item in loadDataSearch.type" :key="item.id">{{item.name}}</option>
+                <select class="form-control" id="sel1" v-model="infoSearch.typeOfEvent">
+                  <option v-for="(item,key) in loadDataSearch.type" :key="key">{{key}}</option>
                 </select>
               </div>
             </div>
             <div class="col mb-4">
               <div class="form-group">
                 <label for="sel2">موضوع رویداد</label>
-                <select class="form-control" id="sel1"
-                v-model="infoSearch.categoryOfEvent">
-                  <option v-for="item in loadDataSearch.category" :key="item.id">{{item.name}}</option>
+                <select class="form-control" id="sel1" v-model="infoSearch.categoryOfEvent">
+                  <option v-for="(item,key) in loadDataSearch.category" :key="key">{{key}}</option>
                 </select>
               </div>
             </div>
@@ -38,7 +41,7 @@
               <div class="form-group">
                 <label for="sel2">شهر</label>
                 <select class="form-control" id="sel1" v-model="infoSearch.cityOfEvent">
-                  <option v-for="item in loadDataSearch.city" :key="item.id">{{item.name}}</option>
+                  <option v-for="(item,key) in loadDataSearch.city" :key="key">{{key}}</option>
                 </select>
               </div>
             </div>
@@ -46,7 +49,8 @@
               <div class="form-group">
                 <label for="sel2">مرتب سازی</label>
                 <select class="form-control" id="sel1" v-model="infoSearch.sortOfEvent">
-                  <option>حروف الفبا</option>
+                  <option>صعودی برحسب الفبا</option>
+                  <option>نزولی برحسب الفبا</option>
                 </select>
               </div>
             </div>
@@ -133,9 +137,10 @@ export default {
         sortOfEvent: ""
       },
       loadDataSearch: {
-        type: [],
-        category: [],
-        city: []
+        type: {},
+        category: {},
+        city: {},
+        appendUrl: "event_type="
       }
     };
   },
@@ -163,16 +168,18 @@ export default {
         responseType: "json"
       });
     }
-    axios.all([getLoadEvent(),getEventType(),getEventCategory(),getEventCity()]).then(
-      axios.spread(function(loadEvent,type,category,city) {
-        next(vm => {
-          vm.setLoadEvent(loadEvent);
-          vm.setType(type);
-          vm.setCategory(category);
-          vm.setCity(city);
-        });
-      })
-    );
+    axios
+      .all([getLoadEvent(), getEventType(), getEventCategory(), getEventCity()])
+      .then(
+        axios.spread(function(loadEvent, type, category, city) {
+          next(vm => {
+            vm.setLoadEvent(loadEvent);
+            vm.setType(type);
+            vm.setCategory(category);
+            vm.setCity(city);
+          });
+        })
+      );
   },
   methods: {
     setLoadEvent: function(response) {
@@ -188,19 +195,22 @@ export default {
     },
     setType: function(response) {
       for (let key in response.data) {
-        this.loadDataSearch.type.push(response.data[key]);
+        this.loadDataSearch.type[response.data[key].name] =
+          response.data[key].id;
       }
       console.log("typeSearchBox", this.loadDataSearch.type);
     },
     setCategory: function(response) {
       for (let key in response.data) {
-        this.loadDataSearch.category.push(response.data[key]);
+        this.loadDataSearch.category[response.data[key].name] =
+          response.data[key].id;
       }
       console.log("categorySearchBox", this.loadDataSearch.category);
     },
     setCity: function(response) {
       for (let key in response.data) {
-        this.loadDataSearch.city.push(response.data[key]);
+        this.loadDataSearch.city[response.data[key].name] =
+          response.data[key].id;
       }
       console.log("citySearchBox", this.loadDataSearch.city);
     },
@@ -221,33 +231,124 @@ export default {
       console.log("12", this.infoPage.viewBool);
       this.infoPage.numberRow++;
       this.infoPage.offset += 3;
-      axios
-        .get(
-          "http://localhost:8000/event/event-list/?limit=3&offset=" +
-            this.infoPage.offset
-        )
-        .then(res => {
-          console.log("page ination", res.data);
-          let event_row_list = [];
-          let bool_row_list = [false, false, false];
-          for (let key in res.data.results) {
-            console.log("key", key);
-            event_row_list.push(res.data.results[key]);
-            bool_row_list[key] = true;
-          }
-          this.infoPage.eventList.push(event_row_list);
-          this.infoPage.viewBool.push(bool_row_list);
-          this.infoPage.boolCheck =
-            bool_row_list[0] & bool_row_list[1] & bool_row_list[2];
-          console.log("boolCheck", this.infoPage.boolCheck);
-          //console.log("11",this.infoPage.eventList)
-          //console.log("12",this.infoPage.viewBool)
-        })
-        .catch(error => console.log("erroe ination", error.response));
+      let baseUrl = "http://localhost:8000/event/event-list/?limit=3&offset=";
+      if (this.loadDataSearch.appendUrl != "") {
+        axios
+          .get(baseUrl + this.infoPage.offset + this.loadDataSearch.appendUrl)
+          .then(res => {
+            console.log("page ination for search", res.data);
+            let event_row_list = [];
+            let bool_row_list = [false, false, false];
+            for (let key in res.data.results) {
+              console.log("key", key);
+              event_row_list.push(res.data.results[key]);
+              bool_row_list[key] = true;
+            }
+            this.infoPage.eventList.push(event_row_list);
+            this.infoPage.viewBool.push(bool_row_list);
+            this.infoPage.boolCheck =
+              bool_row_list[0] & bool_row_list[1] & bool_row_list[2];
+            console.log("boolCheck", this.infoPage.boolCheck);
+            //console.log("11",this.infoPage.eventList)
+            //console.log("12",this.infoPage.viewBool)
+          })
+          .catch(error =>
+            console.log("erroe ination for page ination", error.response)
+          );
+      } else {
+        axios
+          .get(baseUrl + this.infoPage.offset)
+          .then(res => {
+            console.log("page ination", res.data);
+            let event_row_list = [];
+            let bool_row_list = [false, false, false];
+            for (let key in res.data.results) {
+              console.log("key", key);
+              event_row_list.push(res.data.results[key]);
+              bool_row_list[key] = true;
+            }
+            this.infoPage.eventList.push(event_row_list);
+            this.infoPage.viewBool.push(bool_row_list);
+            this.infoPage.boolCheck =
+              bool_row_list[0] & bool_row_list[1] & bool_row_list[2];
+            console.log("boolCheck", this.infoPage.boolCheck);
+            //console.log("11",this.infoPage.eventList)
+            //console.log("12",this.infoPage.viewBool)
+          })
+          .catch(error => console.log("erroe ination", error.response));
+      }
       //window.localStorage.setItem('infoPage', JSON.stringify(this.infoPage));
     },
-    submitSearch:function(){
-      
+    submitSearch: function() {
+      console.log("infosearch", this.infoSearch);
+      let urlPage =
+        "http://localhost:8000/event/event-list/?limit=3&offset=0&event_type=";
+      if (this.loadDataSearch.type[this.infoSearch.typeOfEvent] != undefined) {
+        urlPage =
+          urlPage + this.loadDataSearch.type[this.infoSearch.typeOfEvent];
+        this.loadDataSearch.appendUrl += this.loadDataSearch.type[
+          this.infoSearch.typeOfEvent
+        ];
+      }
+      this.loadDataSearch.appendUrl += "&event_category=";
+      urlPage += "&event_category=";
+      if (
+        this.loadDataSearch.category[this.infoSearch.categoryOfEvent] !=
+        undefined
+      ) {
+        urlPage =
+          urlPage +
+          this.loadDataSearch.category[this.infoSearch.categoryOfEvent];
+        this.loadDataSearch.appendUrl += this.loadDataSearch.category[
+          this.infoSearch.categoryOfEvent
+        ];
+      }
+      this.loadDataSearch.appendUrl += "&city=";
+      urlPage += "&city=";
+      if (this.loadDataSearch.city[this.infoSearch.cityOfEvent] != undefined) {
+        urlPage =
+          urlPage + this.loadDataSearch.city[this.infoSearch.cityOfEvent];
+        this.loadDataSearch.appendUrl += this.loadDataSearch.city[
+          this.infoSearch.cityOfEvent
+        ];
+      }
+      this.loadDataSearch.appendUrl += "&ordering=";
+      urlPage += "&ordering=";
+      if (this.infoSearch.sortOfEvent != "") {
+        if (this.infoSearch.sortOfEvent == "صعودی برحسب الفبا") {
+          urlPage = urlPage + this.infoSearch.nameOfEvent;
+          this.loadDataSearch.appendUrl += this.infoSearch.nameOfEvent;
+        } else {
+          urlPage = urlPage + "-" + this.infoSearch.nameOfEvent;
+          this.loadDataSearch.appendUrl +=
+            this.infoSearch.nameOfEvent + "-" + this.infoSearch.nameOfEvent;
+        }
+      }
+      console.log("urlSearch", urlPage);
+      console.log("appendURL", this.loadDataSearch.appendUrl);
+      this.infoPage.offset = 0;
+      axios
+        .get(urlPage)
+        .then(res => {
+          console.log("resultSearch", res);
+          this.infoPage.eventList.length=0
+          this.infoPage.viewBool.length=0
+          console.log("checkLen",this.infoPage.eventList)
+          console.log("resultView",this.infoPage.viewBool );
+          let event_row = [];
+          let bool_row = [false, false, false];
+          for (let key in res.data.results) {
+            event_row.push(res.data.results[key]);
+            bool_row[key] = true;
+          }
+          this.infoPage.eventList.push(event_row);
+          this.infoPage.viewBool.push(bool_row);
+          console.log("search1",this.infoPage.eventList)
+          console.log("search2",this.infoPage.viewBool)
+        })
+        .catch(error => {
+          console.log("errorResultSearch", error);
+        });
     }
   }
 };

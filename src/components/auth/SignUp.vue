@@ -1,9 +1,10 @@
 <template>
   <div class="login-page">
-    <div class="form">
-      <form class="register-form">
+    <div class="form ">
+      <form class="register-form ">
         <input type="text" placeholder="نام کاربری" v-model="username" />
         <input type="password" placeholder="رمز عبور" v-model="password" />
+        <input type="password" placeholder="تکرار رمز عبور" v-model="password" />
         <input type="text" placeholder="ایمیل" @blur="$v.email.$touch()" v-model="email" :class="{
           'invalid':$v.email.$error
         }" />
@@ -58,7 +59,7 @@ export default {
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
 .login-page {
-  width: 360px;
+  width: 500px;
   padding: 8% 0 0;
   margin: auto;
 }
@@ -66,7 +67,7 @@ export default {
   position: relative;
   z-index: 1;
   background: #ffffff;
-  max-width: 360px;
+  max-width: 500px;
   margin: 0 auto 100px;
   padding: 45px;
   text-align: center;
