@@ -33,16 +33,16 @@ export default new Vuex.Store({
         },
         saveRegisterNumber(state, idTicket) {
             state.registerTicketNumber = idTicket.id
+            console.log("state.reg",state.registerTicketNumber)
+            router.push("/showRegisterNumber")
         },
         clearToken(state) {
             state.token = null
             window.localStorage.removeItem('loginInfo');
-        },
-        setCheckHeader(state, checker) {
-            state.checkHeader = checker.setCheckHeader
+            console.log("leave", window.localStorage.getItem('loginInfo') )
         },
         setEventData(state, dataLoad) {
-            for (let key in dataLoad) { 
+            for (let key in dataLoad) {
                 state.event.push(dataLoad[key])
             }
             console.log("stateEvent",state.event)
@@ -58,6 +58,10 @@ export default new Vuex.Store({
         setCategoryData(state, dataLoad) {
             state.categoryEvent = dataLoad
             console.log("stateCategory",state.categoryEvent)
+        },
+        leave(state) {
+            console.log("leavee")
+            router.replace("/");
         }
     },
     actions: {
@@ -97,7 +101,7 @@ export default new Vuex.Store({
                         token: res.data.token
                     });
                 })
-                .catch(error => console.log(error.response));
+                .catch(error => console.log("error",error.response));
         },
         register({ commit }, idTicket) {
             let idTicketToSever = {
@@ -190,11 +194,16 @@ export default new Vuex.Store({
         getToken: state => {
             let tokenInfo = state.token;
             if (!tokenInfo) {
-                tokenInfo = JSON.parse(window.localStorage.getItem('loginInfo') || null).data.token
+                if (JSON.parse(window.localStorage.getItem('loginInfo') == null)){
+                    tokenInfo=null
+                } else {
+                    tokenInfo = JSON.parse(window.localStorage.getItem('loginInfo')).data.token
+                }
             }
             return tokenInfo;
         },
         getRegisterNumber: state => {
+            console.log("reg", state.registerTicketNumber)
             return state.registerTicketNumber
         },
         getTypeEvent: state => {

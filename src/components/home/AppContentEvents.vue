@@ -9,7 +9,7 @@
 </template>
 <script>
 import CoronaBox from "./contentComponents/CoronaBox";
-import TitlePopularEvents from "./contentComponents/TitlePopularEvents.vue";
+import TitlePopularEvents from "./ContentComponents/TitlePopularEvents";
 import PopularEventsTable from "./contentComponents/PopularEventsTable";
 import PopularCategoryTitle from "./contentComponents/PopularCategory/PopularCategoryTitle";
 import PopularCategory from "./contentComponents/PopularCategory/PopularCategory";

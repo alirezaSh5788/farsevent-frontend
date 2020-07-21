@@ -1,120 +1,128 @@
 <template>
-  <div class="show-events">
-    <div class="container mt-5 px-0">
-      <div class="d-flex flex-row-reverse">
-        <div class="card w-35 mr-3">
-          <img class :src="infoPage.eventList[0][0].image" alt="Card image" style="width:100%" />
-          <h4 class="card-title mt-2 mx-2">{{infoPage.eventList[0][0].title}}</h4>
-          <p class="card-text mx-2">توضیخات رویداد</p>
-          <a href="#" class="btn card-btn">مشاهده</a>
-        </div>
-        <div class="search-box w-65 ml-5">
-          <h3>جست وجوی رویداد</h3>
-          <div class="form-group mb-4">
-            <label for="EName">نام رویداد</label>
-            <input
-              type="text"
-              class="form-control"
-              id="EName"
-              name="EName"
-              v-model="infoSearch.nameOfEvent"
-            />
-          </div>
-          <div class="row">
-            <div class="col mb-4">
-              <div class="form-group">
-                <label for="sel1">نوع رویداد</label>
-                <select class="form-control" id="sel1" v-model="infoSearch.typeOfEvent">
-                  <option v-for="(item,key) in loadDataSearch.type" :key="key">{{key}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col mb-4">
-              <div class="form-group">
-                <label for="sel2">موضوع رویداد</label>
-                <select class="form-control" id="sel1" v-model="infoSearch.categoryOfEvent">
-                  <option v-for="(item,key) in loadDataSearch.category" :key="key">{{key}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col mb-4">
-              <div class="form-group">
-                <label for="sel2">شهر</label>
-                <select class="form-control" id="sel1" v-model="infoSearch.cityOfEvent">
-                  <option v-for="(item,key) in loadDataSearch.city" :key="key">{{key}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="col mb-4">
-              <div class="form-group">
-                <label for="sel2">مرتب سازی</label>
-                <select class="form-control" id="sel1" v-model="infoSearch.sortOfEvent">
-                  <option>صعودی برحسب الفبا</option>
-                  <option>نزولی برحسب الفبا</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="btn my-btn" @click="submitSearch">جست وجو</button>
-        </div>
-      </div>
-
-      <div class="row mt-5" v-for="index in infoPage.numberRow" :key="index">
-        <div class="col-12 col-xs-12 col-md-4" v-if="infoPage.viewBool[index-1][0]">
-          <div class="card w-75">
-            <img
-              class
-              :src="infoPage.eventList[index-1][0].image"
-              alt="Card image"
-              style="width:100%"
-            />
-            <h4 class="card-title mt-2 mx-2">{{infoPage.eventList[index-1][0].title}}</h4>
+  <div >
+    <my-menu></my-menu>
+    <div class="show-events">
+      <div class="container mt-5 px-0">
+        <div class="d-flex flex-row-reverse">
+          <div class="card w-35 mr-3">
+            <img class :src="infoPage.eventList[0][0].image" alt="Card image" style="width:100%"
+            height="150px" />
+            <h4 class="card-title mt-2 mx-2">{{infoPage.eventList[0][0].title}}</h4>
             <p class="card-text mx-2">توضیخات رویداد</p>
-            <a class="btn card-btn" @click="firstButton(index)">مشاهده</a>
+            <a href="#" class="btn card-btn" @click="go()">مشاهده</a>
+          </div>
+          <div class="search-box w-65 ml-5">
+            <h3>جست وجوی رویداد</h3>
+            <div class="form-group mb-4">
+              <label for="EName">نام رویداد</label>
+              <input
+                type="text"
+                class="form-control"
+                id="EName"
+                name="EName"
+                v-model="infoSearch.nameOfEvent"
+              />
+            </div>
+            <div class="row">
+              <div class="col mb-4">
+                <div class="form-group">
+                  <label for="sel1">نوع رویداد</label>
+                  <select class="form-control" id="sel1" v-model="infoSearch.typeOfEvent">
+                    <option v-for="(item,key) in loadDataSearch.type" :key="key">{{key}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col mb-4">
+                <div class="form-group">
+                  <label for="sel2">موضوع رویداد</label>
+                  <select class="form-control" id="sel1" v-model="infoSearch.categoryOfEvent">
+                    <option v-for="(item,key) in loadDataSearch.category" :key="key">{{key}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col mb-4">
+                <div class="form-group">
+                  <label for="sel2">شهر</label>
+                  <select class="form-control" id="sel1" v-model="infoSearch.cityOfEvent">
+                    <option v-for="(item,key) in loadDataSearch.city" :key="key">{{key}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col mb-4">
+                <div class="form-group">
+                  <label for="sel2">مرتب سازی</label>
+                  <select class="form-control" id="sel1" v-model="infoSearch.sortOfEvent">
+                    <option>صعودی برحسب الفبا</option>
+                    <option>نزولی برحسب الفبا</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn my-btn" @click="submitSearch">جست وجو</button>
           </div>
         </div>
-        <div
-          class="col-12 col-xs-12 col-md-4 d-flex justify-content-center"
-          v-if="infoPage.viewBool[index-1][1]"
-        >
-          <div class="card w-75">
-            <img
-              class
-              :src="infoPage.eventList[index-1][1].image"
-              alt="Card image"
-              style="width:100%"
-            />
-            <h4 class="card-title mt-2 mx-2">{{infoPage.eventList[index-1][1].title}}</h4>
-            <p class="card-text mx-2">توضیحات رویداد</p>
-            <a class="btn card-btn" @click="secondButton(index)">مشاهده</a>
-          </div>
-        </div>
-        <div
-          class="col-12 col-xs-12 col-md-4 d-flex justify-content-end"
-          v-if="infoPage.viewBool[index-1][2]"
-        >
-          <div class="card w-75">
-            <img
-              class
-              :src="infoPage.eventList[index-1][2].image"
-              alt="Card image"
-              style="width:100%"
-            />
-            <h4 class="card-title mt-2 mx-2">{{infoPage.eventList[index-1][2].title}}</h4>
-            <p class="card-text mx-2">توضیحات رویداد</p>
-            <a class="btn card-btn" @click="thirdButton(index)">مشاهده</a>
-          </div>
-        </div>
-      </div>
 
-      <br id="more-btn" />
-      <button
-        v-if="infoPage.boolCheck"
-        type="submit"
-        class="btn my-btn more"
-        @click="increaseEvent"
-      >بیشتر</button>
+        <div class="row mt-5" v-for="index in infoPage.numberRow" :key="index">
+          <div class="col-12 col-xs-12 col-md-4 d-flex" v-if="infoPage.viewBool[index-1][0]">
+            <div class="card w-75">
+              <img
+                class
+                :src="infoPage.eventList[index-1][0].image"
+                alt="Card image"
+                style="width:100%"
+                height="150px"
+              />
+              <h4 class="card-title mt-2 mx-2">{{infoPage.eventList[index-1][0].title}}</h4>
+              <p class="card-text mx-2">توضیخات رویداد</p>
+              <a class="btn card-btn" @click="firstButton(index)">مشاهده</a>
+            </div>
+          </div>
+          <div
+            class="col-12 col-xs-12 col-md-4 d-flex justify-content-center"
+            v-if="infoPage.viewBool[index-1][1]"
+          >
+            <div class="card w-75">
+              <img
+                class
+                :src="infoPage.eventList[index-1][1].image"
+                alt="Card image"
+                style="width:100%"
+                height="150px"
+              />
+              <h4 class="card-title mt-2 mx-2">{{infoPage.eventList[index-1][1].title}}</h4>
+              <p class="card-text mx-2">توضیحات رویداد</p>
+              <a class="btn card-btn" @click="secondButton(index)">مشاهده</a>
+            </div>
+          </div>
+          <div
+            class="col-12 col-xs-12 col-md-4 d-flex justify-content-end"
+            v-if="infoPage.viewBool[index-1][2]"
+          >
+            <div class="card w-75">
+              <img
+                class
+                :src="infoPage.eventList[index-1][2].image"
+                alt="Card image"
+                style="width:100%"
+                height="150px"
+              />
+              <h4 class="card-title mt-2 mx-2">{{infoPage.eventList[index-1][2].title}}</h4>
+              <p class="card-text mx-2">توضیحات رویداد</p>
+              <a class="btn card-btn" @click="thirdButton(index)">مشاهده</a>
+            </div>
+          </div>
+        </div>
+
+        <br id="more-btn" />
+        <button
+          v-if="infoPage.boolCheck"
+          type="submit"
+          class="btn my-btn more"
+          @click="increaseEvent"
+        >بیشتر</button>
+      </div>
     </div>
+    <my-footer></my-footer>
   </div>
 </template>
 <script>
@@ -219,11 +227,11 @@ export default {
       this.$router.push("/buyTicket/" + this.infoPage.eventList[idx - 1][0].id);
     },
     secondButton: function(idx) {
-      console.log("id1", this.eventList[idx][1]);
+      console.log("id1", this.infoPage.eventList[idx-1][1].id);
       this.$router.push("/buyTicket/" + this.infoPage.eventList[idx - 1][1].id);
     },
     thirdButton: function(idx) {
-      console.log("id1", this.eventList[idx][1]);
+      console.log("id1", this.infoPage.eventList[idx-1][2].id);
       this.$router.push("/buyTicket/" + this.infoPage.eventList[idx - 1][2].id);
     },
     increaseEvent: function() {
@@ -232,7 +240,8 @@ export default {
       this.infoPage.numberRow++;
       this.infoPage.offset += 3;
       let baseUrl = "http://localhost:8000/event/event-list/?limit=3&offset=";
-      if (this.loadDataSearch.appendUrl != "") {
+      console.log("appends", this.loadDataSearch.appendUrl);
+      if (this.loadDataSearch.appendUrl != "event_type=") {
         axios
           .get(baseUrl + this.infoPage.offset + this.loadDataSearch.appendUrl)
           .then(res => {
@@ -331,10 +340,13 @@ export default {
         .get(urlPage)
         .then(res => {
           console.log("resultSearch", res);
-          this.infoPage.eventList.length=0
-          this.infoPage.viewBool.length=0
-          console.log("checkLen",this.infoPage.eventList)
-          console.log("resultView",this.infoPage.viewBool );
+          this.infoPage.viewBool.splice(0);
+          console.log("resultViewBool1", this.infoPage.viewBool);
+          this.infoPage.eventList.$remove;
+          //this.infoPage.viewBool=[]
+          console.log("checkLen", this.infoPage.eventList.length);
+          console.log("resultView", this.infoPage.eventList);
+          console.log("resultViewBool", this.infoPage.viewBool);
           let event_row = [];
           let bool_row = [false, false, false];
           for (let key in res.data.results) {
@@ -343,15 +355,18 @@ export default {
           }
           this.infoPage.eventList.push(event_row);
           this.infoPage.viewBool.push(bool_row);
-          console.log("search1",this.infoPage.eventList)
-          console.log("search2",this.infoPage.viewBool)
+          console.log("search1", this.infoPage.eventList);
+          console.log("search2", this.infoPage.viewBool);
         })
         .catch(error => {
           console.log("errorResultSearch", error);
         });
     }
+  },
+  go:function(){
+    this.$router.push("/buyTicket/"+infoPage.eventList[0][0].id)
   }
-};
+  };
 </script>
 <style  scoped>
 .my-btn {

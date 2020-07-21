@@ -1,12 +1,12 @@
 <template>
   <div>
-    <!--<app-menu></app-menu>-->
+    <my-menu></my-menu>
     <div class="login-page">
       <div class="form">
         <form class="login-form">
           <input type="text" placeholder="نام کاربری" v-model="username" />
           <input type="password" placeholder="رمز عبور" v-model="password" />
-          <p v-if="checkError">kosssss nago</p>
+          <p v-if="checkError">رمز عبور یا نام کاربری صحیح نمی باشد </p>
           <button @click.prevent="submitted">ورود</button>
         </form>
         <p class="message">
@@ -40,7 +40,7 @@ export default {
     checkError(){
       return this.$store.getters.loginError
     }
-  }
+  },
 };
 </script>
 <style scoped>

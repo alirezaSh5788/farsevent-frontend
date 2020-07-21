@@ -218,6 +218,7 @@ export default {
         })
         .then(res => {
           console.log("success to patch data to server",res);
+          this.$router.push("/")
         })
         .catch(error => {
           console.log("fail to patch data to server",error.response);

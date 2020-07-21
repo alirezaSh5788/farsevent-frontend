@@ -1,27 +1,40 @@
 <template>
-  <div class="login-page">
-    <div class="form ">
-      <form class="register-form ">
-        <input type="text" placeholder="نام کاربری" v-model="username" />
-        <input type="password" placeholder="رمز عبور" v-model="password" />
-        <input type="password" placeholder="تکرار رمز عبور" v-model="password" />
-        <input type="text" placeholder="ایمیل" @blur="$v.email.$touch()" v-model="email" :class="{
-          'invalid':$v.email.$error
-        }" />
-        <p v-if="!$v.email.email">فرمت ایمیل نادرست وارد شده است</p>
-        <input type="text" placeholder="تلفن " v-model="phone" />
-        <input type="password" placeholder="نام" v-model="firstName" />
-        <input type="text" placeholder="نام خانوادگی" v-model="lastName" />
-        <button>ثبت نام</button>
-        <p class="message">
-          قبلاً ثبت نام کرده اید؟ <router-link to="/login">ورود</router-link>
-        </p>
-      </form>
+  <div>
+    <my-menu></my-menu>
+    <div class="login-page">
+      <div class="form">
+        <form class="register-form">
+          <input type="text" placeholder="نام کاربری" v-model="username" />
+          <input type="password" placeholder="رمز عبور" v-model="password"/>
+          <input type="password"
+          placeholder="تکرار رمز عبور" v-model="newPassword"  />
+          <input
+            type="text"
+            placeholder="ایمیل"
+            v-model="email"
+          />
+          <input type="text" placeholder="تلفن " v-model="phone" />
+          <input type="text" placeholder="نام" v-model="firstName" />
+          <input type="text" placeholder="نام خانوادگی" v-model="lastName" />
+          <button @click.prevent="submitted()">ثبت نام</button>
+          <p class="message">
+            قبلاً ثبت نام کرده اید؟
+            <router-link to="/login">ورود</router-link>
+          </p>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 <script>
-import {required ,email} from 'vuelidate/lib/validators'
+import {
+  required,
+  email,
+  password,
+  sameAs,
+  minLength,
+  maxLength
+} from "vuelidate/lib/validators";
 export default {
   data() {
     return {
@@ -30,7 +43,8 @@ export default {
       email: "",
       phone: "",
       firstName: "",
-      lastName: ""
+      lastName: "",
+      newPassword:""
     };
   },
   methods: {
@@ -38,19 +52,38 @@ export default {
       const formData = {
         username: this.username,
         password: this.password,
-        email: this.password,
+        email: this.email,
         phone: this.phone,
         firstName: this.firstName,
-        lastName: this.lastName
+        lastName: this.lastName,
       };
       console.log(formData);
-      this.$store.dispatch("login", formData);
+      this.$store.dispatch("signup", formData);
     }
   },
-  validations:{
-    email:{
-        required,
-        email
+  validations: {
+    email: {
+      required,
+      email
+    },
+    password: {
+      required,
+      minLength: minLength(6)
+    },
+    repeatPassword: {
+      required,
+      sameAsPassword: sameAs("password")
+    },
+    username: {
+      required,
+      minLength: minLength(4),
+      maxLength: maxLength(150)
+    },
+    firstName: {
+      minLength: minLength(4)
+    },
+    lastName: {
+      minLength:minLength(4)
     }
   }
 };
@@ -147,7 +180,10 @@ export default {
 .container .info span .fa {
   color: #ef3b3a;
 }
-.form .invalid{
-  border: .5px solid red;
+.form .invalid {
+  -webkit-transition: all 0.3s ease-in-out !important;
+  transition: all 0.3s ease-in-out !important;
+  border: 0.2rem solid #d40c0c !important;
+  box-shadow: none !important;
 }
 </style>

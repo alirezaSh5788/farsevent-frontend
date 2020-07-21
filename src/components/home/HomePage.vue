@@ -24,11 +24,15 @@ export default {
   beforeRouteEnter: function(to, from, next) {
     next(vm => {
       vm.send();
+      vm.getTok();
     });
   },
   methods:{
     send:function(){
       this.$store.dispatch('loadDataOfHomePage')
+    },
+    getTok(){
+      console.log("tokeen",this.$store.getters.getToken)
     }
   }
 };

@@ -15,13 +15,28 @@
         <div class="col-12 col-xs-12 col-sm-12 col-md-4 col-lg-4 col-xl-4">
           <img src="img/b2b.svg" class="w-100" alt />
         </div>
-        <button class="btn mx-auto my-3">ثبت نام</button>
+        <button class="btn btn-info mx-auto my-3" @click="toCreateEvent()">ثبت نام</button>
       </div>
     </div>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data(){
+    return{
+
+    }
+  },
+  methods:{
+    toCreateEvent:function(){
+      if(this.$store.getters.getToken!=null){
+        this.$router.push("/createEvent")
+      }else{
+        this.$router.push("/login")
+      }
+    }
+  }
+};
 </script>
 <style scoped>
 </style>

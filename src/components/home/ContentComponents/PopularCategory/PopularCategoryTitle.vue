@@ -5,7 +5,18 @@
   </div>
 </template>
 <script>
-export default {};
+export default {
+  data(){
+    return{
+
+    }
+  },
+  methods:{
+    go (){
+      this.$router.push("/allEvent")
+    }
+  }
+};
 </script>
 <style scoped>
 </style>
